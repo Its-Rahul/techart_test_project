@@ -14,7 +14,7 @@ class AgentController extends Controller
     {
         $request->validate([
             'message' => 'required|string',
-            'status' => 'required|in:In Progress,Resolved,Closed', // Optional status update
+            'status' => 'required|in:In Progress,Resolved,Closed',
         ]);
         $ticket = Ticket::find($ticket_id);
 

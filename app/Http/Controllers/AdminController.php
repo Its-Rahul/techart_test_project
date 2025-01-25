@@ -28,13 +28,19 @@ class AdminController extends Controller
         return response()->json(['message' => 'Agent created successfully', 'agent' => $agent], 201);
     }
 
-    public function getAllTickets()
+    public function getAllTickets(Request $request)
     {
-        $perPage = request()->get('per_page', 10);
-        $tickets = Ticket::with('user')->paginate($perPage);
+        $query = Ticket::with('user');
 
+        // Check if a priority filter is applied
+        if ($request->has('priority')) {
+            $query->where('priority', $request->priority);
+        }
+
+        $tickets = $query->paginate(10);
         return response()->json($tickets);
     }
+
 
 
 }

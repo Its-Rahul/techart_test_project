@@ -63,6 +63,7 @@ class UserController extends Controller
         $ticket = Ticket::create([
             'title' => $request->title,
             'description' => $request->description,
+            'priority' => $request->priority,
             'status' => 'Pending',
             'user_id' => Auth::id(),
         ]);
@@ -90,4 +91,5 @@ class UserController extends Controller
 
         return response()->json(['ticket' => $ticket]);
     }
+
 }
