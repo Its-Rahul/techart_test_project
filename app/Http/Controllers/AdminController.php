@@ -6,8 +6,10 @@ use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\ResponseController as ResponseController;
 
-class AdminController extends Controller
+
+class AdminController extends ResponseController
 {
     // Create a new agent
     public function createAgent(Request $request)
@@ -25,7 +27,7 @@ class AdminController extends Controller
             'role' => 'agent', // Agent role
         ]);
 
-        return response()->json(['message' => 'Agent created successfully', 'agent' => $agent], 201);
+        return $this->sendResponse($agent, 'Agent created successfully');
     }
 
     public function getAllTickets(Request $request)
@@ -38,7 +40,7 @@ class AdminController extends Controller
         }
 
         $tickets = $query->paginate(10);
-        return response()->json($tickets);
+        return $this->sendResponse($tickets, 'Tickets retrieved successfully');
     }
 
 

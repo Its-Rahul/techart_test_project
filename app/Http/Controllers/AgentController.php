@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Reply;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth;use App\Http\Controllers\ResponseController as ResponseController;
 
-class AgentController extends Controller
+
+class AgentController extends ResponseController
 {
     // Reply to a ticket
     public function replyToTicket(Request $request, $ticket_id)
@@ -33,6 +34,6 @@ class AgentController extends Controller
         $ticket->status = $request->status;
         $ticket->save();
 
-        return response()->json(['message' => 'Reply added successfully', 'reply' => $reply]);
+        return $this->sendResponse($reply, 'Reply added successfully');
     }
 }

@@ -7,15 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Http\Requests\TicketRequest;
 
-class UserController extends Controller
+class UserController extends ResponseController
 {
     // User Registration
     public function register(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email|unique:users,email|regex:/^[\w\.-]+@[\w\.-]+\.\w+$/',
             'password' => 'required|min:6|confirmed',
         ]);
 
@@ -26,10 +27,7 @@ class UserController extends Controller
             'role' => 'user', // Default role
         ]);
 
-        return response()->json([
-            'message' => 'Registration successful',
-            'token' => $user->createToken('API Token')->plainTextToken,
-        ], 201);
+        return $this->sendResponse($user->createToken('API Token')->plainTextToken, 'Registration successful');
     }
 
     // User Login
@@ -46,20 +44,13 @@ class UserController extends Controller
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        return response()->json([
-            'message' => 'Login successful',
-            'token' => $user->createToken('API Token')->plainTextToken,
-        ]);
+        return $this->sendResponse($user->createToken('API Token')->plainTextToken, 'Login successful');
     }
 
     // Create a new ticket
-    public function createTicket(Request $request)
+    public function createTicket(TicketRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-        ]);
-
+        $request->validated();
         $ticket = Ticket::create([
             'title' => $request->title,
             'description' => $request->description,
@@ -68,7 +59,7 @@ class UserController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        return response()->json(['message' => 'Ticket created successfully', 'ticket' => $ticket], 201);
+        return $this->sendResponse($ticket, 'Ticket created successfully');
     }
 
     // Get all tickets created by the authenticated user
@@ -76,7 +67,7 @@ class UserController extends Controller
     {
         $tickets = Ticket::where('user_id', Auth::id())->paginate(10);
 
-        return response()->json($tickets);
+        return $this->sendResponse($tickets, 'Tickets retrieved successfully');
     }
 
 
@@ -89,7 +80,7 @@ class UserController extends Controller
             return response()->json(['message' => 'Ticket not found or unauthorized access'], 404);
         }
 
-        return response()->json(['ticket' => $ticket]);
+        return $this->sendResponse($ticket, 'Ticket details retrieved successfully');
     }
 
 }
