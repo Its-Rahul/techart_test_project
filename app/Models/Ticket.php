@@ -10,8 +10,10 @@ class Ticket extends Model
     use HasFactory;
 
     protected $table = 'tickets';
-    protected $fillable = ['title', 'description', 'status', 'user_id', 'priority'];
-   
+    protected $fillable = ['title', 'description', 'status', 'user_id', 'priority','agent_id'];
+
+   protected $with = ['user', 'replies', 'agent'];
+
 
     public function user()
     {
@@ -21,5 +23,10 @@ class Ticket extends Model
     public function replies()
     {
         return $this->hasMany(Reply::class);
+    }
+
+    public function agent()
+    {
+        return $this->belongsTo(User::class, 'agent_id');
     }
 }

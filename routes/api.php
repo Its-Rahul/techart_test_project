@@ -29,4 +29,6 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
     //use /admin/tickets?priority=High for filter by priority
     Route::get('/admin/tickets', [AdminController::class, 'getAllTickets']);
+
+    Route::post('/admin/tickets/{ticket_id}/assign', [AdminController::class, 'assignTicketToAgent']);
 });

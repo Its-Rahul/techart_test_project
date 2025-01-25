@@ -43,6 +43,30 @@ class AdminController extends ResponseController
         return $this->sendResponse($tickets, 'Tickets retrieved successfully');
     }
 
+    // Assign a ticket to an agent
+    public function assignTicketToAgent(Request $request, $ticket_id)
+    {
+        $request->validate([
+            'agent_id' => 'required|exists:users,id', // Ensure the agent exists
+        ]);
 
+        // Check if the agent has the role of 'agent'
+        $agent = User::find($request->agent_id);
+        if (!$agent || $agent->role !== 'agent') {
+            return $this->sendError('The specified user is not an agent.', [], 403);
+        }
+
+        $ticket = Ticket::find($ticket_id);
+
+        if (!$ticket) {
+            return $this->sendError('Ticket not found', [], 404);
+        }
+
+        // Assign the ticket to the agent
+        $ticket->agent_id = $request->agent_id;
+        $ticket->save();
+
+        return $this->sendResponse($ticket, 'Ticket assigned to agent successfully');
+    }
 
 }
