@@ -23,7 +23,7 @@ This is a RESTful API for a Support Ticket System built using Laravel. It allows
 ## Technologies Used
 
 - **Laravel**: PHP framework for building the API.
-- **Sanctum/Passport**: For API authentication.
+- **Sanctum**: For API authentication.
 - **MySQL**: For database management.
 - **PHPUnit**: For unit testing.
 
